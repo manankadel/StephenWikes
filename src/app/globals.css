@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Add these to make the footer stick to the bottom */
+/* Custom CSS for sticky footer */
 html, body {
   height: 100%;
 }

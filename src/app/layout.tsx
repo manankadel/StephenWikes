@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-slate-50`}>
         <Navbar /> {/* Add Navbar here */}
         <main className="flex-grow"> {/* Add flex-grow to main for sticky footer */}
           {children}
