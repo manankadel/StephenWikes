@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, CSSProperties } from 'react'; // Import CSSProperties
+import { useState, useEffect, useMemo, CSSProperties } from 'react';
 import Image from 'next/image';
 import styles from './Hero.module.css';
 
@@ -10,8 +10,6 @@ const LAYERS = 6;
 
 const allImageUrls = Array.from({ length: TOTAL_IMAGES }, (_, i) => `/hero-gallery/image${i + 1}.jpg`);
 
-// --- 1. MOVEMENT IS FASTER ---
-// We've increased these values by ~50%
 const sensitivities = [180, 150, 110, 80, 50, 30]; 
 
 const directions = [
@@ -26,14 +24,14 @@ const shuffleArray = (array: string[]) => {
   return array;
 };
 
-// Define a type for our layout style object
 type ImageLayoutStyle = {
-  gridColumn: string;
-  gridRow: string;
+  top: string;
+  left: string;
+  width: string;
+  transform: string;
   aspectRatio: string;
 };
 
-// Helper component now accepts layout styles
 const ParallaxLayer = ({ images, layouts, className, xOffset, yOffset, priorityLoad }: { 
   images: string[], 
   layouts: ImageLayoutStyle[], 
@@ -43,21 +41,21 @@ const ParallaxLayer = ({ images, layouts, className, xOffset, yOffset, priorityL
   priorityLoad: boolean 
 }) => (
   <div
-    className={`${styles.imageGrid} ${className}`}
+    className={`${styles.layerContainer} ${className}`}
     style={{ transform: `translate(${xOffset}px, ${yOffset}px)` }}
   >
     {images.map((src, index) => (
       <div 
         key={src} 
         className={styles.imageWrapper} 
-        style={layouts[index] as CSSProperties} // Apply the random layout style
+        style={layouts[index] as CSSProperties}
       >
         <Image
           src={src}
           alt={`Portfolio collage image for ${src}`}
           fill
           priority={priorityLoad}
-          sizes="(min-width: 768px) 25vw, 50vw"
+          sizes="250px" // Updated size hint to match new larger size
           style={{ objectFit: 'cover' }}
         />
       </div>
@@ -68,7 +66,6 @@ const ParallaxLayer = ({ images, layouts, className, xOffset, yOffset, priorityL
 export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  // useMemo will now generate both shuffled images AND a random layout map
   const { layers, layerLayouts } = useMemo(() => {
     const shuffledUrls = shuffleArray([...allImageUrls]);
     const imagesPerLayer = Math.ceil(TOTAL_IMAGES / LAYERS);
@@ -78,31 +75,20 @@ export default function Hero() {
       return shuffledUrls.slice(start, start + imagesPerLayer);
     });
 
-    // --- 2. GENERATE RANDOM SIZES AND POSITIONS ---
     const newLayouts = newLayers.map(layerImages => {
       return layerImages.map(() => {
-        // Default style
-        const style: ImageLayoutStyle = {
-          gridColumn: 'span 1',
-          gridRow: 'span 1',
-          aspectRatio: '3 / 4',
-        };
+        
+        // --- THIS IS THE MODIFIED LINE ---
+        // Generates a random width between 133px and 250px to make images larger.
+        const randomWidth = 133 + Math.random() * 117;
 
-        // 20% chance for an image to be larger
-        if (Math.random() < 0.2) {
-          const spanType = Math.random();
-          if (spanType < 0.33) { // Span column
-            style.gridColumn = 'span 2';
-            style.aspectRatio = '2 / 1';
-          } else if (spanType < 0.66) { // Span row
-            style.gridRow = 'span 2';
-            style.aspectRatio = '9 / 16';
-          } else { // Span both
-            style.gridColumn = 'span 2';
-            style.gridRow = 'span 2';
-            style.aspectRatio = '1 / 1';
-          }
-        }
+        const style: ImageLayoutStyle = {
+          top: `${Math.random() * 85}%`,
+          left: `${Math.random() * 85}%`,
+          width: `${randomWidth}px`,
+          transform: `rotate(${Math.random() * 50 - 25}deg)`,
+          aspectRatio: `${(Math.random() * 0.5) + 0.8}`,
+        };
         return style;
       });
     });
@@ -135,7 +121,7 @@ export default function Hero() {
         <ParallaxLayer
           key={`layer-${index}`}
           images={imageSet}
-          layouts={layerLayouts[index]} // Pass the generated layout styles
+          layouts={layerLayouts[index]}
           className={styles[`layer${index + 1}`]}
           xOffset={offsets[index].x}
           yOffset={offsets[index].y}
