@@ -1,10 +1,6 @@
-### ./src/app/about/page.tsx ###
-
 export default function AboutPage() {
   return (
-    // Added a wrapping div with a white background
     <div className="bg-white">
-      {/* Added top padding (pt-24) to clear the fixed navbar */}
       <div className="container mx-auto p-8 pt-24">
         <h1 className="text-5xl font-extrabold text-center mb-8 text-gray-900">About Stephen Wikes</h1>
         <div className="max-w-3xl mx-auto text-lg leading-relaxed text-gray-700">
@@ -19,7 +15,6 @@ export default function AboutPage() {
           <p>
             When not behind the camera, Stephen enjoys [mention a hobby, e.g., hiking with his dog, exploring new places, listening to jazz].
           </p>
-          {/* Add a placeholder for a professional headshot */}
           <div className="flex justify-center mt-12 mb-8">
             <div className="bg-gray-200 w-64 h-64 rounded-full flex items-center justify-center text-gray-600 text-center text-sm overflow-hidden shadow-xl">
               Placeholder for Stephen's Headshot

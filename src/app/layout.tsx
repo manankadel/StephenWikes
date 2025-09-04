@@ -1,4 +1,3 @@
-
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
@@ -22,7 +21,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${playfair.variable} bg-black`}>
         <Navbar />
-        {/* KEY CHANGE: Added "flex-grow" back to fix the sticky footer */}
         <main className="flex-grow">
           {children}
         </main>

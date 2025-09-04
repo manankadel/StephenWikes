@@ -8,7 +8,6 @@ export default function ServicesPage() {
         <p className="text-center text-xl text-gray-700 mb-12">Tailored photography solutions to capture your most precious moments.</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {/* Service Card 1 */}
           <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-8 border border-gray-100">
             <h2 className="text-3xl font-bold mb-4 text-gray-900">Wedding Photography</h2>
             <p className="text-gray-700 leading-relaxed mb-6">
@@ -26,7 +25,6 @@ export default function ServicesPage() {
             </button>
           </div>
 
-          {/* Service Card 2 */}
           <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-8 border border-gray-100">
             <h2 className="text-3xl font-bold mb-4 text-gray-900">Portrait Sessions</h2>
             <p className="text-gray-700 leading-relaxed mb-6">
@@ -44,7 +42,6 @@ export default function ServicesPage() {
             </button>
           </div>
 
-          {/* Service Card 3 */}
           <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-8 border border-gray-100">
             <h2 className="text-3xl font-bold mb-4 text-gray-900">Commercial & Events</h2>
             <p className="text-gray-700 leading-relaxed mb-6">
