@@ -4,11 +4,13 @@ code_dump.txt
 dump_project.py
 eslint.config.mjs
 next-env.d.ts
-next.config.ts
+next.config.js
 package.json
+postcss.config.js
 postcss.config.mjs
 project_structure.txt
 public/
+  hero-gallery/
 src/
   app/
     about/
@@ -24,5 +26,8 @@ src/
       page.tsx
   components/
     Footer.tsx
+    Hero.module.css
+    Hero.tsx
     Navbar.tsx
+tailwind.config.js
 tsconfig.json

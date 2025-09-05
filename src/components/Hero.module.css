@@ -1,72 +1,55 @@
-/* ./src/components/Hero.module.css */
 
-/* .heroContainer and base .imageGrid styles remain the same */
 .heroContainer {
   position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  background-color: #000;
+  background-color: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
 }
 
-.imageGrid {
+.layerContainer {
   position: absolute;
-  display: grid;
-  gap: 2rem;
   transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
-  
-  /* NEW: Use a more granular grid to accommodate random spans better */
-  /* This creates a grid with 8 columns, allowing for more flexible layouts */
-  grid-auto-flow: dense; /* Helps grid fill in gaps left by large items */
 }
 
-/* Layer styles remain the same for sizing, opacity, and blur */
 .layer1 {
-  top: -35%; left: -35%; width: 170%; height: 170%; z-index: 1; opacity: 0.5; filter: blur(3px);
-  grid-template-columns: repeat(8, 1fr);
+  top: -35%; left: -35%; width: 170%; height: 170%; z-index: 1; opacity: 1; filter: blur(3px);
 }
 .layer2 {
-  top: -30%; left: -30%; width: 160%; height: 160%; z-index: 2; opacity: 0.6; filter: blur(2px);
-  grid-template-columns: repeat(8, 1fr);
+  top: -30%; left: -30%; width: 160%; height: 160%; z-index: 2; opacity: 1; filter: blur(2px);
 }
 .layer3 {
-  top: -25%; left: -25%; width: 150%; height: 150%; z-index: 3; opacity: 0.7; filter: blur(1px);
-  grid-template-columns: repeat(8, 1fr);
+  top: -25%; left: -25%; width: 150%; height: 150%; z-index: 3; opacity: 1; filter: blur(1px);
 }
 .layer4 {
-  top: -20%; left: -20%; width: 140%; height: 140%; z-index: 4; opacity: 0.8;
-  grid-template-columns: repeat(8, 1fr);
+  top: -20%; left: -20%; width: 140%; height: 140%; z-index: 4; opacity: 1;
 }
 .layer5 {
-  top: -15%; left: -15%; width: 130%; height: 130%; z-index: 5; opacity: 0.9;
-  grid-template-columns: repeat(8, 1fr);
+  top: -15%; left: -15%; width: 130%; height: 130%; z-index: 5; opacity: 1;
 }
 .layer6 {
   top: -10%; left: -10%; width: 120%; height: 120%; z-index: 6; opacity: 1;
-  grid-template-columns: repeat(8, 1fr);
 }
-
 
 .imageWrapper {
-  position: relative;
-  width: 100%;
-  /* REMOVED: aspect-ratio is now set by inline styles from the component */
+  position: absolute;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
 }
 
-
-/* .headline style remains exactly the same */
 .headline {
   position: relative;
   z-index: 7;
   color: white;
   font-family: var(--font-playfair);
   font-size: clamp(3rem, 13vw, 12rem);
-  font-weight: 700;
+  font-weight: 450;
   line-height: 1.05;
   text-transform: uppercase;
   padding: 1rem;
