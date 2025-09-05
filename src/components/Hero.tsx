@@ -13,7 +13,7 @@ const allImageUrls = Array.from({ length: TOTAL_IMAGES }, (_, i) => `/hero-galle
 const sensitivities = [180, 150, 110, 80, 50, 30];
 const directions = [[-1, -1], [1, -1], [-1, 1], [1, 1], [-0.5, 1.5], [1.5, -0.5]];
 
-// --- Type Definitions for TypeScript ---
+// --- Type Definitions ---
 type FinalPosition = { x: string; y: string; rotate: number; zIndex: number; scale: number; };
 type ImageLayoutStyle = { top: string; left: string; width: string; transform: string; aspectRatio: string; };
 
@@ -69,7 +69,6 @@ const ParallaxLayer = ({
         const imgX = useTransform(scrollYProgress, [0, 1], ['0px', finalPos.x]);
         const imgY = useTransform(scrollYProgress, [0, 1], ['0px', finalPos.y]);
         const rotate = useTransform(scrollYProgress, [0.2, 1], [0, finalPos.rotate]);
-        // Animate scale down to 0 to make them vanish
         const scale = useTransform(scrollYProgress, [0, 1], [1, finalPos.scale]);
 
         return (
@@ -126,26 +125,24 @@ export default function Hero({ scrollYProgress }: { scrollYProgress: MotionValue
           aspectRatio: `${(Math.random() * 0.5) + 0.8}`,
         };
 
-        // --- "SMOOTH DRIFTING AWAY" LOGIC ---
-        // Each photo gets a random destination far off-screen
-        const randomX = (Math.random() - 0.5) * 300; // Random horizontal destination
-        const randomY = (Math.random() - 0.5) * 300; // Random vertical destination
-        
+        const randomX = (Math.random() - 0.5) * 300;
+        const randomY = (Math.random() - 0.5) * 300;
         const translateX = `calc(${randomX}vw)`;
         const translateY = `calc(${randomY}vh)`;
 
         finalPositions[src] = { 
             x: translateX, 
             y: translateY,
-            rotate: (Math.random() - 0.5) * 180, // Tumble away with a random rotation
-            scale: 0, // Scale down to nothing so they disappear
-            zIndex: 50 // Keep them on top of other content while animating
+            rotate: (Math.random() - 0.5) * 180,
+            scale: 0,
+            zIndex: 50
         };
         
         return style;
       });
     });
 
+    // YEH HAI WOH SAHI LINE.
     return { layers: newLayers, layerLayouts: newLayouts, finalImagePositions: finalPositions };
   }, []);
 
@@ -155,12 +152,10 @@ export default function Hero({ scrollYProgress }: { scrollYProgress: MotionValue
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-}, []);
+  }, []);
 
   const parallaxStrength = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
   const headlineOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
-  
-  // Fade out the entire hero container to ensure a smooth transition
   const heroOpacity = useTransform(scrollYProgress, [0.7, 1], [1, 0]);
 
   return (
@@ -182,7 +177,7 @@ export default function Hero({ scrollYProgress }: { scrollYProgress: MotionValue
         ))}
 
         <motion.h1 className={styles.headline} style={{ opacity: headlineOpacity }}>
-          PHOTOGRAPHY<br />THAT SPEAKS.
+          PHOTOGRAPHY<br />THAT MOVES.
         </motion.h1>
       </div>
     </motion.div>

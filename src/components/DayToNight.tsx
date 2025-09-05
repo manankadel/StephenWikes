@@ -2,74 +2,86 @@
 
 import React from 'react';
 import { motion, MotionValue, useTransform } from 'framer-motion';
-import Image from 'next/image';
+
+// --- Configuration for the Grid (from your example) ---
+const GRID_ROWS = 12;
+const GRID_COLS = 18;
+const TOTAL_CELLS = GRID_ROWS * GRID_COLS;
+
+// --- A Smart Cell Component (using your provided logic) ---
+const Cell = ({ 
+  index,
+  scrollYProgress 
+}: { 
+  index: number;
+  scrollYProgress: MotionValue<number>; 
+}) => {
+  const rowIndex = Math.floor(index / GRID_COLS);
+  const colIndex = index % GRID_COLS;
+  
+  // This is the working logic from your example. It is correct.
+  const start = (index / TOTAL_CELLS) * 0.8;
+  const end = Math.min(start + 0.15, 1);
+
+  const opacity = useTransform(scrollYProgress, [start, end], [0, 1]);
+  const scale = useTransform(scrollYProgress, [start, end], [0.3, 1]);
+
+  return (
+    <motion.div
+      className="relative h-full w-full"
+      style={{
+        // THE KEY CHANGE: We are using our image here instead of a gradient.
+        backgroundImage: `url(/day-to-night-serengeti.jpeg)`,
+        backgroundSize: `${GRID_COLS * 100}% ${GRID_ROWS * 100}%`,
+        backgroundPosition: `${colIndex * 100 / (GRID_COLS - 1)}% ${rowIndex * 100 / (GRID_ROWS - 1)}%`,
+        willChange: 'transform, opacity',
+        opacity,
+        scale,
+      }}
+    />
+  );
+};
+
 
 export default function DayToNight({ sectionScrollProgress }: { sectionScrollProgress: MotionValue<number> }) {
   
-  // Animate the horizontal position of our "wipe" element from -100% to 0
-  const wipeX = useTransform(sectionScrollProgress, [0, 1], ["-100%", "0%"]);
-
-  // The text reveal logic is restored to the simple wipe
-  const textClipPathValue = useTransform(sectionScrollProgress, [0.2, 0.8], [100, 0]);
-  const textClipPath = useTransform(textClipPathValue, (value) => `inset(0% ${value}% 0% 0%)`);
+  const cells = Array.from({ length: TOTAL_CELLS }, (_, i) => i);
+  
+  // Text appears at the very end of the animation (logic from your example)
+  const textOpacity = useTransform(sectionScrollProgress, [0.85, 1], [0, 1]);
+  const textY = useTransform(sectionScrollProgress, [0.85, 1], [50, 0]);
 
   return (
-    <div className="relative h-full w-full">
-      {/* --- SVG "GOOEY" FILTER DEFINITION --- */}
-      <svg width="0" height="0" className="absolute">
-        <defs>
-          <filter id="gooey-liquid-filter">
-            {/* Creates a blur effect */}
-            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
-            {/* Increases the contrast, creating sharp edges from the blur */}
-            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
-            {/* Puts the original graphic back on top */}
-            <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
-          </filter>
-        </defs>
-      </svg>
-      
-      {/* The base Black & White Image (always visible) */}
-      <Image
-        src="/day-to-night-serengeti.jpeg"
-        alt="A Stephen Wilkes Day to Night photograph (black and white)"
-        fill
-        style={{ objectFit: 'cover', filter: 'grayscale(1)' }}
-        quality={90}
-      />
-      
-      {/* This container will have the "gooey" filter applied to it */}
+    <div className="relative h-full w-full bg-black">
+      {/* The Grid Container */}
       <div 
-        className="absolute inset-0"
-        style={{ filter: 'url(#gooey-liquid-filter)' }}
+        className="grid h-full w-full"
+        style={{
+          gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`,
+          gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)`,
+        }}
       >
-        {/* This is the animated "wipe" element. It's a white box that moves across the screen. */}
-        {/* The filter will make its edge look liquid as it reveals the color image. */}
-        <motion.div
-          className="absolute inset-0 bg-white"
-          style={{ 
-            x: wipeX,
-            maskImage: 'url(/day-to-night-serengeti.jpeg)',
-            maskSize: 'cover',
-            WebkitMaskImage: 'url(/day-to-night-serengeti.jpeg)',
-            WebkitMaskSize: 'cover',
-          }}
-        />
-      </div>
+        {/* Each cell gets the scroll progress */}
+        {cells.map((_, i) => (
+            <Cell 
+              key={i} 
+              index={i} 
+              scrollYProgress={sectionScrollProgress}
+            />
+        ))}
+      </div >
 
       {/* The Title Section */}
-      <div className="absolute bottom-10 left-10">
-        <h3 className="text-outline font-serif text-4xl font-bold">Day to Night™</h3>
-        <p className="text-outline text-lg">Serengeti National Park, Tanzania</p>
-        
-        <motion.div 
-          className="absolute top-0 left-0"
-          style={{ clipPath: textClipPath }}
-        >
-          <h3 className="text-white font-serif text-4xl font-bold">Day to Night™</h3>
-          <p className="text-white text-lg">Serengeti National Park, Tanzania</p>
-        </motion.div>
-      </div>
+      <motion.div
+        className="absolute bottom-10 left-10 text-white z-10"
+        style={{ 
+          opacity: textOpacity,
+          y: textY
+        }}
+      >
+        <h3 className="font-serif text-4xl font-bold">Day to Night™</h3>
+        <p className="text-lg">Serengeti National Park, Tanzania</p>
+      </motion.div>
     </div>
   );
 }
