@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, CSSProperties } from 'react';
 import Image from 'next/image';
+import { motion, useTransform, MotionValue } from 'framer-motion';
 import styles from './Hero.module.css';
 
 // --- Configuration ---
@@ -9,91 +10,140 @@ const TOTAL_IMAGES = 50;
 const LAYERS = 6;
 
 const allImageUrls = Array.from({ length: TOTAL_IMAGES }, (_, i) => `/hero-gallery/image${i + 1}.jpg`);
+const sensitivities = [180, 150, 110, 80, 50, 30];
+const directions = [[-1, -1], [1, -1], [-1, 1], [1, 1], [-0.5, 1.5], [1.5, -0.5]];
 
-const sensitivities = [180, 150, 110, 80, 50, 30]; 
-
-const directions = [
-  [-1, -1], [1, -1], [-1, 1], [1, 1], [-0.5, 1.5], [1.5, -0.5],
-];
+// --- Type Definitions ---
+type FinalPosition = { x: string; y: string; rotate: number; zIndex: number; scale: number; };
+type ImageLayoutStyle = { top: string; left: string; width: string; transform: string; aspectRatio: string; };
 
 const shuffleArray = (array: string[]) => {
-  for (let i = array.length - 1; i > 0; i--) {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
   }
-  return array;
+  return newArray;
 };
 
-type ImageLayoutStyle = {
-  top: string;
-  left: string;
-  width: string;
-  transform: string;
-  aspectRatio: string;
+// --- Child Component for animation ---
+const ParallaxLayer = ({ 
+  images, 
+  layouts, 
+  className, 
+  priorityLoad, 
+  scrollYProgress, 
+  finalPositions,
+  mousePosition,
+  parallaxStrength,
+  index
+}: {
+  images: string[];
+  layouts: ImageLayoutStyle[];
+  className: string;
+  priorityLoad: boolean;
+  scrollYProgress: MotionValue<number>;
+  finalPositions: { [key: string]: FinalPosition };
+  mousePosition: { x: number; y: number };
+  parallaxStrength: MotionValue<number>;
+  index: number;
+}) => {
+  const sensitivity = sensitivities[index];
+  const [dirX, dirY] = directions[index];
+
+  const baseOffsetX = typeof window !== 'undefined' ? (mousePosition.x / window.innerWidth - 0.5) : 0;
+  const baseOffsetY = typeof window !== 'undefined' ? (mousePosition.y / window.innerHeight - 0.5) : 0;
+
+  const x = useTransform(parallaxStrength, val => baseOffsetX * sensitivity * dirX * val);
+  const y = useTransform(parallaxStrength, val => baseOffsetY * sensitivity * dirY * val);
+
+  return (
+    <motion.div
+      className={`${styles.layerContainer} ${className}`}
+      style={{ x, y }}
+    >
+      {images.map((src, imgIndex) => {
+        const initialStyle = layouts[imgIndex] as CSSProperties;
+        const finalPos = finalPositions[src] || { x: '0%', y: '0%', rotate: 0, scale: 1, zIndex: 0 };
+        
+        const imgX = useTransform(scrollYProgress, [0, 1], ['0px', finalPos.x]);
+        const imgY = useTransform(scrollYProgress, [0, 1], ['0px', finalPos.y]);
+        const rotate = useTransform(scrollYProgress, [0.2, 1], [0, finalPos.rotate]);
+        const scale = useTransform(scrollYProgress, [0, 1], [1, finalPos.scale]);
+
+        return (
+          <motion.div
+            key={src}
+            className={styles.imageWrapper}
+            style={{ ...initialStyle, x: imgX, y: imgY, rotate, scale, zIndex: finalPos.zIndex }}
+          >
+            <Image
+              src={src}
+              alt={`Portfolio collage image for ${src}`}
+              fill
+              priority={priorityLoad}
+              sizes="250px"
+              style={{ objectFit: 'cover' }}
+            />
+          </motion.div>
+        );
+      })}
+    </motion.div>
+  );
 };
 
-const ParallaxLayer = ({ images, layouts, className, xOffset, yOffset, priorityLoad }: { 
-  images: string[], 
-  layouts: ImageLayoutStyle[], 
-  className: string, 
-  xOffset: number, 
-  yOffset: number, 
-  priorityLoad: boolean 
-}) => (
-  <div
-    className={`${styles.layerContainer} ${className}`}
-    style={{ transform: `translate(${xOffset}px, ${yOffset}px)` }}
-  >
-    {images.map((src, index) => (
-      <div 
-        key={src} 
-        className={styles.imageWrapper} 
-        style={layouts[index] as CSSProperties}
-      >
-        <Image
-          src={src}
-          alt={`Portfolio collage image for ${src}`}
-          fill
-          priority={priorityLoad}
-          sizes="250px" // Updated size hint to match new larger size
-          style={{ objectFit: 'cover' }}
-        />
-      </div>
-    ))}
-  </div>
-);
-
-export default function Hero() {
+// --- Your Original Hero Component ---
+export default function Hero({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const { layers, layerLayouts } = useMemo(() => {
+  const { layers, layerLayouts, finalImagePositions } = useMemo((): {
+    layers: string[][];
+    layerLayouts: ImageLayoutStyle[][];
+    finalImagePositions: { [key: string]: FinalPosition };
+  } => {
     const shuffledUrls = shuffleArray([...allImageUrls]);
     const imagesPerLayer = Math.ceil(TOTAL_IMAGES / LAYERS);
     
+    const finalPositions: { [key: string]: FinalPosition } = {};
+
     const newLayers = Array.from({ length: LAYERS }, (_, i) => {
-      const start = i * imagesPerLayer;
-      return shuffledUrls.slice(start, start + imagesPerLayer);
+        const start = i * imagesPerLayer;
+        return shuffledUrls.slice(start, start + imagesPerLayer);
     });
 
     const newLayouts = newLayers.map(layerImages => {
-      return layerImages.map(() => {
-        
-        // --- THIS IS THE MODIFIED LINE ---
-        // Generates a random width between 133px and 250px to make images larger.
+      return layerImages.map(src => {
         const randomWidth = 133 + Math.random() * 117;
+        const initialTop = Math.random() * 85;
+        const initialLeft = Math.random() * 85;
 
         const style: ImageLayoutStyle = {
-          top: `${Math.random() * 85}%`,
-          left: `${Math.random() * 85}%`,
+          top: `${initialTop}%`,
+          left: `${initialLeft}%`,
           width: `${randomWidth}px`,
           transform: `rotate(${Math.random() * 50 - 25}deg)`,
           aspectRatio: `${(Math.random() * 0.5) + 0.8}`,
         };
+
+        const randomX = (Math.random() - 0.5) * 300;
+        const randomY = (Math.random() - 0.5) * 300;
+        const translateX = `calc(${randomX}vw)`;
+        const translateY = `calc(${randomY}vh)`;
+
+        finalPositions[src] = { 
+            x: translateX, 
+            y: translateY,
+            rotate: (Math.random() - 0.5) * 180,
+            scale: 0,
+            zIndex: 50
+        };
+        
         return style;
       });
     });
 
-    return { layers: newLayers, layerLayouts: newLayouts };
+    // YEH HAI WOH SAHI LINE.
+    return { layers: newLayers, layerLayouts: newLayouts, finalImagePositions: finalPositions };
   }, []);
 
   useEffect(() => {
@@ -104,34 +154,32 @@ export default function Hero() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  const offsets = layers.map((_, index) => {
-    const sensitivity = sensitivities[index];
-    const [dirX, dirY] = directions[index];
-    const baseOffsetX = mousePosition.x !== 0 ? (mousePosition.x / window.innerWidth - 0.5) : 0;
-    const baseOffsetY = mousePosition.y !== 0 ? (mousePosition.y / window.innerHeight - 0.5) : 0;
-    return {
-      x: baseOffsetX * sensitivity * dirX,
-      y: baseOffsetY * sensitivity * dirY,
-    };
-  });
+  const parallaxStrength = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+  const headlineOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
+  const heroOpacity = useTransform(scrollYProgress, [0.7, 1], [1, 0]);
 
   return (
-    <div className={styles.heroContainer}>
-      {layers.map((imageSet, index) => (
-        <ParallaxLayer
-          key={`layer-${index}`}
-          images={imageSet}
-          layouts={layerLayouts[index]}
-          className={styles[`layer${index + 1}`]}
-          xOffset={offsets[index].x}
-          yOffset={offsets[index].y}
-          priorityLoad={index < 2}
-        />
-      ))}
+    <motion.div style={{ opacity: heroOpacity }}>
+      <div className={styles.heroContainer}>
+        {layers.map((imageSet, index) => (
+          <ParallaxLayer
+            key={`layer-${index}`}
+            images={imageSet}
+            layouts={layerLayouts[index]}
+            className={styles[`layer${index + 1}`]}
+            priorityLoad={index < 2}
+            scrollYProgress={scrollYProgress}
+            finalPositions={finalImagePositions}
+            mousePosition={mousePosition}
+            parallaxStrength={parallaxStrength}
+            index={index}
+          />
+        ))}
 
-      <h1 className={styles.headline}>
-        PHOTOGRAPHY<br />THAT MOVES.
-      </h1>
-    </div>
+        <motion.h1 className={styles.headline} style={{ opacity: headlineOpacity }}>
+          PHOTOGRAPHY<br />THAT MOVES.
+        </motion.h1>
+      </div>
+    </motion.div>
   );
 }
