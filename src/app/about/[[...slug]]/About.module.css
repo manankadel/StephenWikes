@@ -1,0 +1,91 @@
+/* FILE: src/app/about/[[...slug]]/About.module.css */
+
+.scrollContainer {
+  position: relative;
+  background-color: #f0f2f5; /* A light grey to see the panel borders */
+}
+
+.stickyWrapper {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.horizontalContainer {
+  height: 100vh;
+  display: flex;
+  will-change: transform;
+}
+
+/* --- THE CORRECTED TRIPTYCH FLEXBOX LAYOUT --- */
+.chapter {
+  width: 100vw;
+  height: 100vh;
+  display: flex; /* This is the main flex container for the three panels */
+  flex-wrap: nowrap;
+}
+
+.centerColumn {
+  /* 1. KEY: This panel is fixed to 50% of the viewport width */
+  flex-basis: 50%;
+  flex-shrink: 0; /* Prevents this panel from ever shrinking */
+  
+  /* 2. Styling for the content area */
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4rem 6rem;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+  color: #111827;
+}
+
+.imageColumn {
+  /* 1. KEY: 'flex: 1' tells the side panels to share the remaining 50% space equally (25% each) */
+  flex: 1;
+
+  /* 2. KEY: Use a nested flexbox to perfectly center the image inside */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* 3. Styling for the panel itself */
+  height: 100vh;
+  min-width: 0; /* A flexbox safety property */
+  background-color: #ffffff;
+}
+
+.scaledImage {
+  /* 1. KEY: Prevents the image from being larger than its container */
+  max-width: 100%;
+  max-height: 100%;
+
+  /* 2. KEY: Ensures the image scales down, maintaining aspect ratio, with empty space around it */
+  object-fit: contain;
+
+  /* 3. Adds some breathing room around the image */
+  padding: 2rem;
+  box-sizing: border-box;
+}
+/* --- END OF LAYOUT CHANGES --- */
+
+.mainContent {
+  padding-top: 5rem;
+}
+
+/* All text and overlay styles below remain the same */
+.chapterLabel { font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2rem; color: #6b7280; }
+.mainTitle { font-family: var(--font-playfair); font-size: clamp(3rem, 6vw, 5.5rem); font-weight: 700; text-transform: uppercase; margin-bottom: 2.5rem; line-height: 1.05; letter-spacing: -0.02em; }
+.description { font-size: 1.125rem; line-height: 1.7; max-width: 50ch; color: #374151; margin-bottom: 3rem; }
+.footnote { font-size: 0.875rem; color: #4b5563; max-width: 60ch; padding-bottom: 4rem; }
+.insetImagesContainer { display: flex; gap: 2rem; margin-top: 2rem; }
+.insetImageWrapper { width: 150px; }
+.insetImage { position: relative; width: 100%; aspect-ratio: 4 / 5; margin-bottom: 0.5rem; }
+.insetImageCaption { font-size: 0.75rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; }
+.imageOverlay { display: none; /* Overlays are disabled in this layout as they are not needed */ }
+.imageOverlayTop { display: none; }
