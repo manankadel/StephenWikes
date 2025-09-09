@@ -6,7 +6,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import Hero from '@/components/Hero';
 import RevealedContent from '@/components/RevealedContent';
 import VideoDayNight from '@/components/VideoDayNight';
-import WorkSection from '@/components/WorkSection';// <-- 1. IMPORT THE NEW COMPONENT
+import WorkSection from '@/components/WorkSection'
 
 export default function Home() {
   const mainSectionRef = useRef(null);
