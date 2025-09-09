@@ -1,0 +1,115 @@
+/* FILE: src/app/portfolio/Portfolio.module.css */
+
+/* ... keep all existing styles for .contentWrapper, .cvSection, etc. ... */
+.contentWrapper {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2rem;
+}
+
+.cvSection {
+    grid-column: span 12 / span 12;
+}
+
+@media (min-width: 1024px) {
+    .cvSection {
+        grid-column: span 8 / span 8;
+        display: flex;
+        gap: 2rem;
+    }
+}
+
+.stickyImageContainer {
+    flex-basis: 33.333333%;
+    flex-shrink: 0;
+}
+
+.stickyImage {
+    position: sticky;
+    top: 6rem;
+    align-self: flex-start;
+}
+
+.cvContent {
+    flex-basis: 66.666667%;
+}
+
+
+/* === AWARDS STYLES === */
+
+.awardsSection {
+    grid-column: span 12 / span 12;
+}
+
+@media (min-width: 1024px) {
+    .awardsSection {
+        grid-column: span 4 / span 4;
+    }
+}
+
+.awardsTimeline {
+    position: relative;
+    padding: 1rem 0;
+}
+
+.awardsTimeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background-color: #d1d5db;
+    transform: translateX(-50%);
+}
+
+.awardItem {
+    position: relative;
+    display: flex;
+    margin-bottom: 2rem;
+}
+
+.awardCard {
+    width: calc(50% - 2rem);
+    padding: 0.75rem;
+    background-color: #f3f4f6;
+    border-radius: 0.375rem;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.awardItem:nth-child(odd) {
+    justify-content: flex-start;
+}
+
+.awardItem:nth-child(even) {
+    justify-content: flex-end;
+}
+
+.awardItem::after {
+    content: '';
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    background-color: #9ca3af;
+    border: 2px solid #F9FAFB;
+    border-radius: 9999px;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+/* === HERO TITLE STYLE (MODIFIED) === */
+.heroTitle {
+    /* MODIFIED: Adjusted the vw unit to better fit on one line across screen sizes. */
+    font-size: clamp(3rem, 25vw, 18rem);
+    
+    font-weight: 700;
+    /* MODIFIED: A tight line-height is not needed for single-line text. Reset to 1. */
+    line-height: 0.8;
+    text-align: center;
+
+    /* ADDED: This is the key property to force the text onto a single line. */
+    white-space: nowrap;
+}
