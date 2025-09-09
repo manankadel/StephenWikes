@@ -1,55 +1,198 @@
 /* FILE: src/app/portfolio/Portfolio.module.css */
 
-/* ... keep all existing styles for .contentWrapper, .cvSection, etc. ... */
+/*
+* ======================================================================
+*   CORE HORIZONTAL SCROLLING STYLES
+* ======================================================================
+*/
+
+.scrollContainer {
+  position: relative;
+  /* Height is 100vh per panel. We have 5 panels. */
+  height: 500vh;
+}
+
+.stickyWrapper {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.horizontalContainer {
+  display: flex;
+  /* Width is 100vw per panel. */
+  width: 500vw;
+  height: 100vh;
+  will-change: transform;
+}
+
+.panel {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem;
+  box-sizing: border-box;
+}
+
 .contentWrapper {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
 }
 
-.cvSection {
-    grid-column: span 12 / span 12;
+/*
+* ======================================================================
+*   PANEL 1: HERO SECTION
+* ======================================================================
+*/
+
+.heroTitle {
+  font-size: clamp(3rem, 25vw, 18rem);
+  font-weight: 700;
+  line-height: 0.8;
+  text-align: center;
+  white-space: nowrap;
 }
 
-@media (min-width: 1024px) {
-    .cvSection {
-        grid-column: span 8 / span 8;
-        display: flex;
-        gap: 2rem;
-    }
+/*
+* ======================================================================
+*   PANEL 2: BIOGRAPHY SECTION
+* ======================================================================
+*/
+
+.panelTitle {
+    font-size: 2.25rem;
+    font-family: var(--font-playfair);
+    font-weight: 700;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 1rem;
+}
+
+.bioSection {
+  display: flex;
+  gap: 3rem;
+  width: 100%;
 }
 
 .stickyImageContainer {
-    flex-basis: 33.333333%;
-    flex-shrink: 0;
+  flex-basis: 33.333333%;
+  flex-shrink: 0;
 }
 
 .stickyImage {
-    position: sticky;
-    top: 6rem;
-    align-self: flex-start;
+  position: sticky;
+  top: 6rem;
+  align-self: flex-start;
 }
 
-.cvContent {
-    flex-basis: 66.666667%;
+.bioContent {
+  flex-basis: 66.666667%;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: 1rem;
 }
 
-
-/* === AWARDS STYLES === */
-
-.awardsSection {
-    grid-column: span 12 / span 12;
+.bioContent p {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: #374151;
+    margin-bottom: 1.5rem;
 }
 
-@media (min-width: 1024px) {
-    .awardsSection {
-        grid-column: span 4 / span 4;
-    }
+/*
+* ======================================================================
+*   PANEL 3: CURRICULUM VITAE (C.V.) SECTION
+* ======================================================================
+*/
+
+.cvPanelContent {
+    width: 100%;
+    max-width: 900px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cvMainTitle {
+    font-size: 3rem;
+    font-family: var(--font-playfair);
+    font-weight: 700;
+    text-align: center;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    flex-shrink: 0;
+    border-bottom: 1px solid #d1d5db;
+}
+
+.cvScrollableContent {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 0 1rem;
+}
+
+.cvSubSection {
+    margin-bottom: 2.5rem;
+}
+
+.cvSubheading {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.cvScrollableContent p {
+    margin-bottom: 0.25rem;
+    color: #4b5563;
+}
+
+.cvList {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.cvList li {
+    margin-bottom: 0.5rem;
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+/*
+* ======================================================================
+*   PANEL 4 - AWARDS TIMELINE STYLES
+* ======================================================================
+*/
+
+.awardsPanelContent {
+    width: 100%;
+    max-width: 900px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.awardsMainTitle {
+    font-size: 4rem;
+    font-family: var(--font-playfair);
+    font-weight: 700;
+    text-align: center;
+    color: #b0b0b0;
+    margin-bottom: 2rem;
+    flex-shrink: 0;
 }
 
 .awardsTimeline {
     position: relative;
-    padding: 1rem 0;
+    width: 100%;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 2rem 0;
 }
 
 .awardsTimeline::before {
@@ -59,57 +202,189 @@
     bottom: 0;
     left: 50%;
     width: 1px;
-    background-color: #d1d5db;
+    background-color: #e0e0e0;
     transform: translateX(-50%);
 }
 
 .awardItem {
     position: relative;
     display: flex;
-    margin-bottom: 2rem;
-}
-
-.awardCard {
-    width: calc(50% - 2rem);
-    padding: 0.75rem;
-    background-color: #f3f4f6;
-    border-radius: 0.375rem;
-    box-sizing: border-box;
-    text-align: left;
-}
-
-.awardItem:nth-child(odd) {
-    justify-content: flex-start;
-}
-
-.awardItem:nth-child(even) {
-    justify-content: flex-end;
+    margin-bottom: 1rem;
+    width: 100%;
 }
 
 .awardItem::after {
     content: '';
     position: absolute;
-    top: 1rem;
+    top: 2rem;
     left: 50%;
-    width: 12px;
-    height: 12px;
-    background-color: #9ca3af;
-    border: 2px solid #F9FAFB;
+    width: 10px;
+    height: 10px;
+    background-color: #cccccc;
     border-radius: 9999px;
     transform: translateX(-50%);
     z-index: 10;
 }
 
-/* === HERO TITLE STYLE (MODIFIED) === */
-.heroTitle {
-    /* MODIFIED: Adjusted the vw unit to better fit on one line across screen sizes. */
-    font-size: clamp(3rem, 25vw, 18rem);
-    
-    font-weight: 700;
-    /* MODIFIED: A tight line-height is not needed for single-line text. Reset to 1. */
-    line-height: 0.8;
-    text-align: center;
+.awardItem:nth-child(odd) {
+    justify-content: flex-start;
+}
+.awardItem:nth-child(odd) .awardCard {
+    margin-left: calc(50% - 250px);
+}
 
-    /* ADDED: This is the key property to force the text onto a single line. */
-    white-space: nowrap;
+.awardItem:nth-child(even) {
+    justify-content: flex-end;
+}
+.awardItem:nth-child(even) .awardCard {
+    margin-right: calc(50% - 250px);
+}
+
+.awardCard {
+    width: 250px;
+    background-color: white;
+    border: 1px solid #f0f0f0;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.awardLogoContainer {
+    position: relative;
+    height: 100px;
+    background-color: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.25rem;
+}
+
+.awardName {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    color: #333;
+}
+
+.awardDescription {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #666;
+}
+
+/*
+* ======================================================================
+*   PANEL 5 - BIBLIOGRAPHY STYLES
+* ======================================================================
+*/
+.bibliographyPanelContent {
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.bibliographyMainTitle {
+    font-size: 3rem;
+    font-family: var(--font-playfair);
+    font-weight: 700;
+    text-align: center;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    flex-shrink: 0;
+    border-bottom: 1px solid #d1d5db;
+}
+
+.bibliographyScrollableContent {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 0 1rem;
+}
+
+.bibliographyColumns {
+    column-count: 3;
+    column-gap: 2.5rem;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.bibliographyColumns li {
+    margin-bottom: 0.75rem;
+    color: #4b5563;
+    line-height: 1.6;
+    break-inside: avoid-column;
+}
+
+/*
+* ======================================================================
+*   INTERACTIONS & HOVER STYLES
+* ======================================================================
+*/
+
+.scrollableContent {
+    cursor: grab;
+}
+.scrollableContent:active {
+    cursor: grabbing;
+}
+
+.awardCard {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.awardCard:hover {
+    cursor: pointer;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.cvList li,
+.bibliographyColumns li {
+    transition: background-color 0.2s ease-in-out;
+    border-radius: 4px;
+    padding: 0.1rem 0.5rem;
+    margin-left: -0.5rem;
+}
+
+.cvList li:hover,
+.bibliographyColumns li:hover {
+    background-color: #f0f2f5;
+}
+
+.stickyImage {
+    transition: filter 0.4s ease;
+}
+
+.bioSection:hover .stickyImage {
+    filter: brightness(0.95);
+}
+
+
+/*
+* ======================================================================
+*   RESPONSIVE STYLES
+* ======================================================================
+*/
+@media (max-width: 1024px) {
+    .bibliographyColumns {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .bibliographyColumns {
+        column-count: 1;
+    }
+    .awardsTimeline::before { left: 1rem; }
+    .awardItem::after { left: 1rem; }
+    .awardItem:nth-child(odd) .awardCard,
+    .awardItem:nth-child(even) .awardCard {
+        margin-left: 3rem;
+        margin-right: 0; /* Reset right margin */
+        width: calc(100% - 4rem);
+    }
 }
