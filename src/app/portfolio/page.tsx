@@ -98,7 +98,7 @@ export default function PortfolioPage() {
               <div className={styles.stickyImage}>
                 <div className="relative w-full aspect-[3/4]">
                    <Image
-                    src="/hero-gallery/image11.jpg" // Use the same portrait image
+                    src="/hero-gallery/Stephen.webp" // Use the same portrait image
                     alt="Portrait of Stephen Wikes"
                     layout="fill"
                     objectFit="cover"
